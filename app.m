@@ -24,7 +24,7 @@ NB_LINKS = 6;
 
 %% Parametres DH 
 
-as = [0 0 dThigh dTibia 0 footHeight];
+as = [0 0 thighLength tibiaLength 0 footHeight];
 ds = [0 0 0 0 0 0 ];
 alphas = [-pi/2 -pi/2 0 pi -pi/2 0];
 thetas = [theta1 theta2 + pi/2 theta3 theta4 theta5 theta6];
@@ -59,7 +59,9 @@ size(matrice_jacobienne)
 
 %% Plot robot
 
-joint_positions = zeros(NB_LINKS, 3);
+
+nb_links = NB_LINKS;
+joint_positions = zeros(nb_links, 3);
 
 theta1_v = 0;
 theta2_v = 0.3;
@@ -68,7 +70,7 @@ theta4_v = aThigh+aTibia;
 theta5_v = aTibia;
 theta6_v = 0.3;
 
-for i = 1:NB_LINKS
+for i = 1:nb_links
     i
     squeeze(A0i(i, :, :))
     p = squeeze(A0i(i, 1:3, 4));
@@ -94,15 +96,22 @@ view(3);
 %% Trajectoire Cubique
 
 pi = [0,0,0];
-pd = [1,1,1];
+pd = [1,0,0];
+p_int = [pd(1)/2, pd(2)/2, 0.025];
+
 dt = 1;
 steps = 10;
 
-positions = trajectoire_cubique(pi, pd, dt, steps)
+positions1 = trajectoire_cubique(pi, p_int, dt/2, steps/2)
+positions2 = trajectoire_cubique(p_int, pd, dt/2, steps/2)
+positions = cat(1, positions1, positions2)
+
 
 figure()
 scatter3(positions(:, 1), positions(:, 2), positions(:, 3))
-
+xlabel('X') 
+ylabel('Y') 
+zlabel('Z') 
 
 
 
