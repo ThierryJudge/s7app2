@@ -6,7 +6,7 @@ function positions = trajectoire_cubique(pi, pd, dt , steps)
 %   steps: nombre de points a prendre.
 
 a0 = pi; % position initiale
-a1 = [0,0,0]; %vitesse finale 
+%a1 = [0,0,0]; %vitesse finale 
 a2 = (pd-a0)./ (dt^2/3);
 a3 = (-2/(3 * dt)) * a2;
 
