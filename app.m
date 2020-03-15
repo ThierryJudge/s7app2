@@ -51,9 +51,20 @@ matrice_correction = [0 0 -1 hipOffsetX,
 Ai_i1(NB_LINKS+1, :, :) = matrice_correction;
 A0i(NB_LINKS+1, :, :) = matrice_correction * tmp;
 
+
+
+theta1_v = 0;
+theta2_v = 0;
+theta3_v = 0;
+theta4_v = 0;
+theta5_v = 0;
+theta6_v = 0;
+p = squeeze(A0i(6, 1:3, 4));
+double(subs(p, {theta1, theta2, theta3, theta4, theta5, theta6}, {theta1_v, theta2_v, theta3_v, theta4_v, theta5_v, theta6_v}))
+
 %% Creation de la matrice jacobienne 
 
-matrice_jacobienne = algo_jaco(A0i);
+matrice_jacobienne = algo_jaco(A0i, 1);
 matrice_jacobienne
 size(matrice_jacobienne)
 
@@ -146,7 +157,7 @@ hold off
 %% Trajectoire Cubique
 
 pi = [0,0,0];
-pd = [0,1,0];
+pd = [0,0.01,0];
 p_int = [pd(1)/2, pd(2)/2, 0.025];
 
 dt = 1;
@@ -162,76 +173,6 @@ scatter3(positions(:, 1), positions(:, 2), positions(:, 3))
 xlabel('X') 
 ylabel('Y') 
 zlabel('Z') 
-
-
-%% Algo trajectoire 
-
-theta1_v = 0;
-theta2_v = 0;
-theta3_v = 0;
-theta4_v = 0;
-theta5_v = 0;
-theta6_v = 0;
-
-
-p = squeeze(A0i(i, 1:3, 4));
-p_initial = subs(p, {theta1, theta2, theta3, theta4, theta5, theta6}, {theta1_v, theta2_v, theta3_v, theta4_v, theta5_v, theta6_v});
-
-epsilon = 0.1;
-K = 0.01;
-k = 10 ^ -2;
-
-q = [0 0 0 0 0 0 0]';
-
-
-figure()
-hold on
-for interpolation_index = 1:2 %length(positions)
-    pd = squeeze(positions(i, :))
-    
-    % Get current position
-    pe = squeeze(A0i(NB_LINKS, 1:3, 4));
-    pe = subs(p, {theta1, theta2, theta3, theta4, theta5, theta6}, {q(1), q(2), q(3), q(4), q(5), q(6)});
-    e = pd - pe;
-    
-    counter = 0
-    while norm(e) > epsilon 
-        jac = double(subs(matrice_jacobienne, {theta1, theta2, theta3, theta4, theta5, theta6}, {q(1), q(2), q(3), q(4), q(5), q(6)}));
-        jac = jac(1:3, :);
-        delta_q = K * (jac' * (jac * jac' + k^2*eye(3, 3))^-1)*e';
-        % move 
-        q = double(q + delta_q);
-        
-        % recalculate error 
-        pe = squeeze(A0i(NB_LINKS, 1:3, 4));
-        pe = subs(p, {theta1, theta2, theta3, theta4, theta5, theta6}, {q(1), q(2), q(3), q(4), q(5), q(6)});
-        e = double(pd - pe);
-        e
-        norm(e)
-        counter = counter + 1;
-    end
-    
-    % Plot positions
-    joint_positions = zeros(NB_LINKS, 3);
-
-    for i = 1:NB_LINKS
-        p = squeeze(A0i(i, 1:3, 4));
-        p = subs(p, {theta1, theta2, theta3, theta4, theta5, theta6}, {q(1), q(2), q(3), q(4), q(5), q(6)});
-        joint_positions(i, :) = p;
-    end
-    
-    plot3(joint_positions(:, 1), joint_positions(:, 2), joint_positions(:, 3))
-    scatter3(joint_positions(:, 1), joint_positions(:, 2), joint_positions(:, 3), 'O')
-    
-    
-    
-end
-
-hold off 
-xlabel('X') 
-ylabel('Y') 
-zlabel('Z') 
-view(3);
 
 
 

@@ -1,12 +1,19 @@
-function J = algo_jaco(matrices_homo)
+function J = algo_jaco(matrices_homo, symbolic)
 
 j = length(matrices_homo);
 
-syms syms_placeholder real;
-J = ones(6, j) * syms_placeholder;
 
-z = zeros(j+1, 3) * syms_placeholder;
-p = zeros(j+1, 3) * syms_placeholder;
+J = ones(6, j);
+
+z = zeros(j+1, 3);
+p = zeros(j+1, 3);
+
+if symbolic==1
+    syms syms_placeholder real;
+    J = J * syms_placeholder;
+    z = z * syms_placeholder;
+    p = p * syms_placeholder;
+end
 
 z(1, :) = [0 0 1].';
 p(1, :) = [0 0 0].';
