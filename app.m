@@ -26,8 +26,8 @@ NB_LINKS = 6;
 
 as = [0 0 thighLength tibiaLength 0 footHeight];
 ds = [0 0 0 0 0 0 ];
-alphas = [-pi/2 -pi/2 0 pi -pi/2 0];
-thetas = [theta1 theta2 + pi/2 theta3 theta4 theta5 theta6];
+alphas = [-pi/2 -pi/2 0 pi pi/2 0];
+thetas = [theta1 theta2 - pi/2 theta3 theta4 theta5 theta6];
 
 % Creation des matrices homogenes
 syms syms_placeholder real
@@ -75,8 +75,8 @@ nb_links = NB_LINKS;
 joint_positions = zeros(nb_links, 3);
 
 theta1_v = 0;
-theta2_v = 0%0.3;
-theta3_v = 0%-aThigh;
+theta2_v = 0.3;
+theta3_v = -aThigh;
 theta4_v = aThigh+aTibia;
 theta5_v = aTibia;
 theta6_v = 0.3;
