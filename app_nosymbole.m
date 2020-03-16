@@ -37,6 +37,7 @@ positions = cat(1, positions1, positions2)
 
 
 figure()
+axis equal
 scatter3(positions(:, 1), positions(:, 2), positions(:, 3))
 xlabel('X') 
 ylabel('Y') 
@@ -91,6 +92,7 @@ positions2 = trajectoire_cubique(p_int, pd, dt/2, steps/2);
 positions = cat(1, positions1, positions2)
 
 figure()
+axis equal
 scatter3(positions(:, 1), positions(:, 2), positions(:, 3))
 xlabel('X') 
 ylabel('Y') 
@@ -104,7 +106,7 @@ k = 10 ^ -2;
 q = q_initial';
 
 
-joint_positions = zeros(length(positions), NB_LINKS, 3);
+joint_positions = zeros(length(positions), NB_LINKS+1, 3);
 
 for interpolation_index = 1:length(positions)
     interpolation_index
