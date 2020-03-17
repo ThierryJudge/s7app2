@@ -114,34 +114,87 @@ K = 0.001;
 k = 10 ^ -2;
 q = q_initial';
 
+kp = 10^-2;
+kr = 10^-3;
+
 
 joint_positions = zeros(length(positions), NB_LINKS+1, 3);
+
+Re = squeeze(A0is(7,1:3,1:3)); % Current (initial) orientation 
+
+Rd = Re; % GOAL orientation is initial orientation
+nd = Rd(1:3,1);
+sd = Rd(1:3,2);
+ad = Rd(1:3,3);
 
 for interpolation_index = 1:length(positions)
     disp(newline)
     disp(['interpolation_index: ',num2str(interpolation_index)])
     p_final = squeeze(positions(interpolation_index, :));
     
-    % Get current position
+    % Get current position and error 
     A0is = get_homo_mats(q);
     pe = squeeze(A0is(7, 1:3, 4));
-    e = p_final - pe;
+    ep = p_final - pe;
+    
+    
+    % Get current otientation and error 
+    Re = squeeze(A0is(7,1:3,1:3)); % Current orientation 
+    ne = Re(1:3,1);
+    se = Re(1:3,2);
+    ae = Re(1:3,3);
+
+    eo = 1/2 * (cross(ne, nd) + cross(se, sd) + cross(ae,ad));
+    L = -1/2 * ((S(nd)*S(ne)) + (S(sd)*S(se)) + (S(ad)*S(ae)));
+
+    er = inv(L)*eo;
+    
+    % Display 
     disp(['Goal position: ',num2str(p_final)])
     disp(['Initial position: ',num2str(pe)])
-    disp(['Initial error: ',num2str(norm(e))])
+    disp(['Initial orientation: '])
+    disp(Re)
+    disp(['Initial position error: ',num2str(norm(ep))])
+    disp(['Initial orientation error: ',num2str(norm(er))])
     counter = 0;
-    while norm(e) > epsilon 
+    
+    while ((norm(ep) > epsilon) || norm(er) > epsilon) 
         jac = algo_jaco(A0is, 0);
-        jac = jac(1:3, :);
-        delta_q = K * (jac' * (jac * jac' + k^2*eye(3, 3))^-1)*e';
+        Jp = jac(1:3, :);
+        Jo = jac(4:6, :);
+        
+%         size(p_inv(Jp, kp)*kp*ep')
+        
+%         size(p_inv(hat(Jp, Jo), kr))
+%         size((kr*er - Jo*p_inv(Jp, kp)*kp*ep'))
+        
+        delta_q = p_inv(Jp, kp)*kp*ep' + p_inv(hat(Jp, Jo), kr)*(kr*er - Jo*p_inv(Jp, kp)*kp*ep');
+
+        %delta_q = K * p_inv(jac, k)*ep;
+
         % move 
         q = double(q + delta_q);
-        % recalculate error 
+        
+        
+        %recalculate error 
         A0is = get_homo_mats(q);
         pe = squeeze(A0is(7, 1:3, 4));
-        e = p_final - pe;
-        if mod(counter,10) == 0
-%             disp(['Current error: ',num2str(norm(e))])
+        ep = p_final - pe;
+        
+        Re = squeeze(A0is(7,1:3,1:3)); % Current orientation 
+        ne = Re(1:3,1);
+        se = Re(1:3,2);
+        ae = Re(1:3,3);
+
+        eo = 1/2 * (cross(ne, nd) + cross(se, sd) + cross(ae,ad));
+        L = -1/2 * ((S(nd)*S(ne)) + (S(sd)*S(se)) + (S(ad)*S(ae)));
+
+        er = inv(L)*eo;
+        
+        % Display 
+        if mod(counter,100) == 0
+             disp(['Current position error: ',num2str(norm(ep))])
+             disp(['Current rotation error: ',num2str(norm(er))])
         end
         counter = counter + 1;
     end
