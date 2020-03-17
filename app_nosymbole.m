@@ -21,18 +21,24 @@ syms theta1 theta2 theta3 theta4 theta5 theta6 real
 
 NB_LINKS = 6;
 
+%% Check a 0 
+
+q = [0 0 0 0 0 0]';
+A0is = get_homo_mats(q);
+
+squeeze(A0is(end, :, :))
 
 %% Trajectoire Cubique
 
-pi = [0,0,0];
-pd = [0,0.01,0];
-p_int = [pd(1)/2, pd(2)/2, 0.025];
+p_initial = [0,0,0];
+p_final = [0,0.01,0];
+p_int = [p_final(1)/2, p_final(2)/2, 0.025];
 
 dt = 1;
 steps = 10;
 
-positions1 = trajectoire_cubique(pi, p_int, dt/2, steps/2);
-positions2 = trajectoire_cubique(p_int, pd, dt/2, steps/2);
+positions1 = trajectoire_cubique(p_initial, p_int, dt/2, steps/2);
+positions2 = trajectoire_cubique(p_int, p_final, dt/2, steps/2);
 positions = cat(1, positions1, positions2)
 
 
@@ -59,6 +65,7 @@ for i = 1:NB_LINKS+1
 end 
 
 figure()
+title('Initial joint positions')
 axis equal
 hold on
 plot3(joint_positions(:, 1), joint_positions(:, 2), joint_positions(:, 3))
@@ -74,21 +81,22 @@ position_initiale = squeeze(A0is(7, 1:3, 4))
 
 %% Algo trajectoire 
 
-q_initial = [0 0 0.2 -0.4 -0.2 0]';
+% q_initial = [0 0 0.2 -0.4 -0.2 0]';
+q_initial = [0 0.3 -aThigh aThigh+aTibia aTibia 0.3]'
 A0is = get_homo_mats(q_initial);
-pi = squeeze(A0is(7, 1:3, 4))
+p_initial = squeeze(A0is(end, 1:3, 4))
 
-pd = pi
-pd(2) = pd(2) - 0.01
+p_final = p_initial;
+p_final(1) = p_final(1) + 0.03
 
 %Interpolation 
-p_int = [pd(1)/2, pd(2)/2, pi(3)+0.025];
+p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+0.025]
 
 dt = 1;
 steps = 10;
 
-positions1 = trajectoire_cubique(pi, p_int, dt/2, steps/2);
-positions2 = trajectoire_cubique(p_int, pd, dt/2, steps/2);
+positions1 = trajectoire_cubique(p_initial, p_int, dt/2, steps/2);
+positions2 = trajectoire_cubique(p_int, p_final, dt/2, steps/2);
 positions = cat(1, positions1, positions2)
 
 figure()
@@ -100,6 +108,7 @@ zlabel('Z')
 title('Interpolaton')
 
 
+%% Run trajectory 
 epsilon = 0.001;
 K = 0.001;
 k = 10 ^ -2;
@@ -111,13 +120,13 @@ joint_positions = zeros(length(positions), NB_LINKS+1, 3);
 for interpolation_index = 1:length(positions)
     disp(newline)
     disp(['interpolation_index: ',num2str(interpolation_index)])
-    pd = squeeze(positions(interpolation_index, :));
+    p_final = squeeze(positions(interpolation_index, :));
     
     % Get current position
     A0is = get_homo_mats(q);
     pe = squeeze(A0is(7, 1:3, 4));
-    e = pd - pe;
-    disp(['Goal position: ',num2str(pd)])
+    e = p_final - pe;
+    disp(['Goal position: ',num2str(p_final)])
     disp(['Initial position: ',num2str(pe)])
     disp(['Initial error: ',num2str(norm(e))])
     counter = 0;
@@ -130,7 +139,7 @@ for interpolation_index = 1:length(positions)
         % recalculate error 
         A0is = get_homo_mats(q);
         pe = squeeze(A0is(7, 1:3, 4));
-        e = pd - pe;
+        e = p_final - pe;
         if mod(counter,10) == 0
 %             disp(['Current error: ',num2str(norm(e))])
         end
@@ -152,6 +161,7 @@ end
 final_positions = zeros(length(positions), 3);
 
 figure()
+title('Trajectory joint positions')
 axis equal
 xlabel('X') 
 ylabel('Y') 
@@ -183,8 +193,8 @@ hold off
 % squeeze(positions(1, :))
 % squeeze(positions(end, :))
 % 
-% squeeze(joint_positions(2, end, :))
-% squeeze(joint_positions(end, end, :))
+squeeze(joint_positions(1, end, :))
+squeeze(joint_positions(end, end, :))
 
 
 
