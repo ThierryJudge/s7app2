@@ -109,13 +109,16 @@ q = q_initial';
 joint_positions = zeros(length(positions), NB_LINKS+1, 3);
 
 for interpolation_index = 1:length(positions)
-    interpolation_index
-    pd = squeeze(positions(interpolation_index, :))
+    disp(newline)
+    disp(['interpolation_index: ',num2str(interpolation_index)])
+    pd = squeeze(positions(interpolation_index, :));
     
     % Get current position
     A0is = get_homo_mats(q);
     pe = squeeze(A0is(7, 1:3, 4));
     e = pd - pe;
+    disp(['Goal position: ',num2str(pd)])
+    disp(['Initial position: ',num2str(pe)])
     disp(['Initial error: ',num2str(norm(e))])
     counter = 0;
     while norm(e) > epsilon 
@@ -129,12 +132,12 @@ for interpolation_index = 1:length(positions)
         pe = squeeze(A0is(7, 1:3, 4));
         e = pd - pe;
         if mod(counter,10) == 0
-            disp(['Current error: ',num2str(norm(e))])
+%             disp(['Current error: ',num2str(norm(e))])
         end
         counter = counter + 1;
     end
 
-
+    disp(['Final position: ',num2str(pe)])
     for i = 1:NB_LINKS+1
         p = squeeze(A0is(i, 1:3, 4));
         joint_positions(interpolation_index, i, :) = round(p, 5);
@@ -143,6 +146,10 @@ for interpolation_index = 1:length(positions)
     
     
 end
+
+%% Plot resutls 
+
+final_positions = zeros(length(positions), 3);
 
 figure()
 axis equal
@@ -153,10 +160,31 @@ hold on
 for i =1:length(positions)
     plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
     scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
-%     squeeze(joint_positions(i, 6, :))
+    final_positions(i, :) = squeeze(joint_positions(i, end, :));
 end
 view(3);
 hold off 
+
+figure()
+axis equal
+title('Effector positions')
+xlabel('X') 
+ylabel('Y') 
+zlabel('Z')
+hold on
+for i =1:length(positions)
+    final_positions(i, :)
+    scatter3(final_positions(i, 1), final_positions(i, 2), final_positions(i, 3), '*')
+end
+view(3);
+hold off 
+
+
+% squeeze(positions(1, :))
+% squeeze(positions(end, :))
+% 
+% squeeze(joint_positions(2, end, :))
+% squeeze(joint_positions(end, end, :))
 
 
 
