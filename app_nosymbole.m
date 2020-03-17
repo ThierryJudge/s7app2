@@ -87,18 +87,34 @@ A0is = get_homo_mats(q_initial);
 p_initial = squeeze(A0is(end, 1:3, 4))
 
 p_final = p_initial;
-p_final(1) = p_final(1) + 0.03
-
-%Interpolation 
-p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+0.025]
+p_final(1) = p_final(1) + 0.03;
+p_final(2) = p_final(2) + 0.005;
 
 dt = 1;
-steps = 10;
+steps = 20;
+
+%Interpolation 
+p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+0.025];
 
 positions1 = trajectoire_cubique(p_initial, p_int, dt/2, steps/2);
 positions2 = trajectoire_cubique(p_int, p_final, dt/2, steps/2);
 positions = cat(1, positions1, positions2)
 
+
+% Trajectoire z 
+% x = [0 0.2  0.3 0.5 0.7 0.8  1]
+% y = ([0 0.25 0.7 1   0.7 0.25 0] * 0.025) + p_initial(3)
+% dx = 1/steps
+% xq = 0+dx:dx:1
+% vq = interpn(x,y,xq,'cubic');
+% size(vq)
+% positions(:, 3) = vq
+% figure()
+% title('Trajectoire z')
+% plot(x,y,'o',xq,vq,'-');
+
+
+% Display 
 figure()
 axis equal
 scatter3(positions(:, 1), positions(:, 2), positions(:, 3))
@@ -109,7 +125,8 @@ title('Interpolaton')
 
 
 %% Run trajectory 
-epsilon = 0.001;
+epsilon_p = 0.001;
+epsilon_r = 0.01;
 K = 0.001;
 k = 10 ^ -2;
 q = q_initial';
@@ -158,15 +175,10 @@ for interpolation_index = 1:length(positions)
     disp(['Initial orientation error: ',num2str(norm(er))])
     counter = 0;
     
-    while ((norm(ep) > epsilon) || norm(er) > epsilon) 
+    while ((norm(ep) > epsilon_p) || norm(er) > epsilon_r) 
         jac = algo_jaco(A0is, 0);
         Jp = jac(1:3, :);
         Jo = jac(4:6, :);
-        
-%         size(p_inv(Jp, kp)*kp*ep')
-        
-%         size(p_inv(hat(Jp, Jo), kr))
-%         size((kr*er - Jo*p_inv(Jp, kp)*kp*ep'))
         
         delta_q = p_inv(Jp, kp)*kp*ep' + p_inv(hat(Jp, Jo), kr)*(kr*er - Jo*p_inv(Jp, kp)*kp*ep');
 
@@ -193,8 +205,8 @@ for interpolation_index = 1:length(positions)
         
         % Display 
         if mod(counter,100) == 0
-             disp(['Current position error: ',num2str(norm(ep))])
-             disp(['Current rotation error: ',num2str(norm(er))])
+             disp(['Current position error: ',num2str(norm(ep)), ', index: ', num2str(interpolation_index)])
+             disp(['Current rotation error: ',num2str(norm(er)), ', index: ', num2str(interpolation_index)])
         end
         counter = counter + 1;
     end
@@ -224,9 +236,47 @@ for i =1:length(positions)
     plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
     scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
     final_positions(i, :) = squeeze(joint_positions(i, end, :));
+    scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
 end
 view(3);
 hold off 
+
+figure()
+title('Trajectory joint positions (1/2)')
+axis equal
+xlabel('X') 
+ylabel('Y') 
+zlabel('Z') 
+hold on
+for i =1:length(positions)/2
+    plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
+    scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
+    final_positions(i, :) = squeeze(joint_positions(i, end, :));
+    scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
+end
+view(3);
+hold off 
+
+
+figure()
+title('Trajectory joint positions (2/2)')
+axis equal
+xlabel('X') 
+ylabel('Y') 
+zlabel('Z') 
+hold on
+for i =length(positions)/2:length(positions)
+    plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
+    scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
+    final_positions(i, :) = squeeze(joint_positions(i, end, :));
+    scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
+end
+view(3);
+hold off 
+
+
+
+
 
 figure()
 axis equal
@@ -250,5 +300,23 @@ squeeze(joint_positions(1, end, :))
 squeeze(joint_positions(end, end, :))
 
 
+%% 
 
+% x = [0 0.2 0.5 0.8 1]
+% y = [0 0.25 1 0.25 0]
+% 
+% xq = 0:0.01:1
+% vq = interpn(x,y,xq,'cubic');
+% 
+% figure()
+% plot(x,y,'o',xq,vq,'-');
+% 
+% %%
+% 
+% x = [0:.1:1];
+% y = normpdf(x,0.5,0.25) * 0.025;
+% y = y - y(1);
+% 
+% figure()
+% plot(x,y)
 
