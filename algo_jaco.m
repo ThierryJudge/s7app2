@@ -1,5 +1,14 @@
 function J = algo_jaco(matrices_homo, symbolic)
 
+hipOffsetY = .037; 
+hipOffsetZ = .096; 
+hipOffsetX = .008; 
+
+Tb = [0 1 0 hipOffsetX,
+      1 0 0 -hipOffsetY,
+      0 0 -1 hipOffsetZ,
+      0 0 0 1];
+
 j = length(matrices_homo);
 
 
@@ -15,8 +24,11 @@ if symbolic==1
     p = p * syms_placeholder;
 end
 
-z(1, :) = [0 0 1].';
-p(1, :) = [0 0 0].';
+% z(1, :) = [0 0 1].';
+% p(1, :) = [0 0 0].';
+
+z(1, :) = Tb(1:3,3);
+p(1, :) = Tb(1:3,4);
 
 for i = 1:j
     tmp = squeeze(matrices_homo(i, :, :));
