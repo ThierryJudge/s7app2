@@ -35,7 +35,7 @@ Ai_i1 = ones(NB_LINKS+1, 4, 4) * syms_placeholder; % Matrice du lien i a i+1
 A0i = ones(NB_LINKS+1, 4, 4) * syms_placeholder; % Matrice du lien 0 a i
 
 Tb = [0 1 0 hipOffsetX,
-      1 0 0 hipOffsetY,
+      1 0 0 -hipOffsetY,
       0 0 -1 hipOffsetZ,
       0 0 0 1];  
 
@@ -82,6 +82,14 @@ theta3_v = -aThigh;
 theta4_v = aThigh+aTibia;
 theta5_v = aTibia;
 theta6_v = 0.3;
+% 
+% theta1_v = 0;
+% theta2_v = 0;
+% theta3_v = 0;
+% theta4_v = 0;
+% theta5_v = 0;
+% theta6_v = 0;
+
 
 rad2deg(theta2_v)
 rad2deg(theta3_v)
@@ -108,7 +116,7 @@ for i = 1:nb_links
     joint_positions(i, :) = p;
 end
 
-joint_positions = round(joint_positions, 5);
+joint_positions = round(joint_positions, 5)
 
 
 axis equal
@@ -154,7 +162,7 @@ for theta6_v = 0:0.1:0.4
         joint_positions(i, :) = p;
     end
 
-    joint_positions = round(joint_positions, 5)
+    joint_positions = round(joint_positions, 5);
 
     plot3(joint_positions(:, 1), joint_positions(:, 2), joint_positions(:, 3))
     scatter3(joint_positions(:, 1), joint_positions(:, 2), joint_positions(:, 3), 'O')

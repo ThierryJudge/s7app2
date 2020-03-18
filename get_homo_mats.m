@@ -26,7 +26,7 @@ thetas(2) = thetas(2) - pi/2;
 A0i = ones(NB_LINKS+1, 4, 4);
 
 Tb = [0 1 0 hipOffsetX,
-      1 0 0 hipOffsetY,
+      1 0 0 -hipOffsetY,
       0 0 -1 hipOffsetZ,
       0 0 0 1];  
 
