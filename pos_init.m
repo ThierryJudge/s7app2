@@ -19,6 +19,7 @@ NB_LINKS = 6;
 
 pospiedz = hipOffsetZ - dThigh - dTibia - footHeight;
 
+% q_initial = [0 0 0 0 0 0]
 q_initial = [0 0.3 -aThigh aThigh+aTibia aTibia 0.3];
   
 [A0is, mat_homo] = get_homo_mats_v2(q_initial);
@@ -54,7 +55,7 @@ p_final(1) = p_final(1) + 0.03;
 p_final(2) = p_final(2);
 
 dt = 1;
-steps = 50;
+steps = 20;
 
 %Interpolation 
 p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+0.025];
@@ -93,7 +94,7 @@ view(3);
 %% Run trajectory 
 % epsilon_p = 1e-10;
 
-epsilon_p = 0.001;
+epsilon_p = 0.00001;
 epsilon_r = 0.01;
 K = 0.001;
 k = 10 ^ -2;
@@ -153,7 +154,7 @@ for interpolation_index = 1:length(positions)
     counter = 0;
 
     while ((norm(ep) > epsilon_p) || norm(er) > epsilon_r) 
-        jac = R_u * algo_jaco_v2(A0is);
+        jac = algo_jaco_v2(A0is);
         Jp = jac(1:3, :);
         Jo = jac(4:6, :);
         
@@ -239,38 +240,38 @@ hold off
 % view(3);
 % hold off 
 
-figure()
-title('Trajectory joint positions (1/2)')
-axis equal
-xlabel('X') 
-ylabel('Y') 
-zlabel('Z') 
-hold on
-for i =1:length(positions)/2
-    plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
-    scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
-    final_positions(i, :) = squeeze(joint_positions(i, end, :));
-    scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
-end
-view(3);
-hold off 
-
-
-figure()
-title('Trajectory joint positions (2/2)')
-axis equal
-xlabel('X') 
-ylabel('Y') 
-zlabel('Z') 
-hold on
-for i =length(positions)/2:length(positions)
-    plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
-    scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
-    final_positions(i, :) = squeeze(joint_positions(i, end, :));
-    scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
-end
-view(3);
-hold off 
+% figure()
+% title('Trajectory joint positions (1/2)')
+% axis equal
+% xlabel('X') 
+% ylabel('Y') 
+% zlabel('Z') 
+% hold on
+% for i =1:length(positions)/2
+%     plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
+%     scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
+%     final_positions(i, :) = squeeze(joint_positions(i, end, :));
+%     scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
+% end
+% view(3);
+% hold off 
+% 
+% 
+% figure()
+% title('Trajectory joint positions (2/2)')
+% axis equal
+% xlabel('X') 
+% ylabel('Y') 
+% zlabel('Z') 
+% hold on
+% for i =length(positions)/2:length(positions)
+%     plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
+%     scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
+%     final_positions(i, :) = squeeze(joint_positions(i, end, :));
+%     scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
+% end
+% view(3);
+% hold off 
 
 
 
