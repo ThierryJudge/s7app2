@@ -17,7 +17,7 @@ pospiedz = hipOffsetZ - dThigh - dTibia - footHeight;
 
 NB_LINKS = 6;
 
-as = [0 0 dThigh dTibia 0 0];
+as = [0 0 dThigh dTibia 0 footHeight];
 ds = [0 0 0 0 0 0 ];
 alphas = [-pi/2 -pi/2 0 pi pi/2 0];
 % q_initial = [0 0 0 0 0 0];
@@ -43,7 +43,7 @@ for i=1:NB_LINKS
 end
 
 
-Te = [0 0 -1 footHeight,
+Te = [0 0 -1 0,
       0 -1 0 0,
       -1 0 0 0,
       0 0 0 1]; 

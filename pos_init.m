@@ -118,6 +118,8 @@ R_u = [0 1 0 0 0 0,
        0 0 0 0 1 0,
        0 0 0 1 0 0,
        0 0 0 0 0 -1];
+   
+qs = zeros(steps, NB_LINKS)
 
 for interpolation_index = 1:length(positions)
     disp(newline)
@@ -190,6 +192,8 @@ for interpolation_index = 1:length(positions)
         end
         counter = counter + 1;
     end
+    
+    qs(interpolation_index, :) = q;
 
     disp(['Final position: ',num2str(pe')])
     for i = 1:NB_LINKS
@@ -200,6 +204,16 @@ for interpolation_index = 1:length(positions)
     
     
 end
+
+%% Output joint positions to txt file
+time = 2;
+dt = time/steps;
+t = 0:dt:time-dt;
+timed_qs = [t', qs];
+
+dlmwrite('qs.txt',timed_qs,'delimiter',',','newline','pc')
+disp('File qs.txt'))
+
 
 %% Plot resutls 
 
