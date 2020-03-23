@@ -55,7 +55,7 @@ p_final(1) = p_final(1) + 0.03;
 p_final(2) = p_final(2);
 
 dt = 1;
-steps = 20;
+steps = 50;
 
 %Interpolation 
 p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+0.025];
@@ -75,6 +75,18 @@ positions = cat(1, positions1, positions2);
 % figure()
 % title('Trajectoire z')
 % plot(x,y,'o',xq,vq,'-');
+
+%% Trajectoire z 
+% x = -4:4;
+% y = [0 0.015 0.025 0.015 0];
+x = [0 0.2  0.3 0.5 0.7 0.8  1]
+y = ([0 0.25 0.7 1   0.7 0.25 0] * 0.025) + p_initial(3)
+
+
+cs = spline(x,[0 y 0]);
+xx = linspace(-4,4,101);
+plot(x,y,'o',xx,ppval(cs,xx),'-');
+%%
 
 
 % Display 
@@ -193,7 +205,8 @@ for interpolation_index = 1:length(positions)
         counter = counter + 1;
     end
     
-    qs(interpolation_index, :) = q;
+%     qs(interpolation_index, :) = q;
+    qs(interpolation_index, :) = round(q, 4);
 
     disp(['Final position: ',num2str(pe')])
     for i = 1:NB_LINKS
@@ -212,7 +225,7 @@ t = 0:dt:time-dt;
 timed_qs = [t', qs];
 
 dlmwrite('qs.txt',timed_qs,'delimiter',',','newline','pc')
-disp('File qs.txt'))
+disp('File qs.txt')
 
 
 %% Plot resutls 
@@ -235,24 +248,25 @@ end
 view(3);
 hold off 
 
-% figure()
-% title('Trajectory joint positions') 
-% for i =1:length(positions)
-%     plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
-%     xlabel('X') 
-%     ylabel('Y') 
-%     zlabel('Z')
-%     axis([-0.05 0.05 -0.05 0.05 -0.2 0.1])
-%     view(118,27)
-%     hold on
-%     scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
-%     final_positions(i, :) = squeeze(joint_positions(i, end, :));
-%     scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
-%     hold off
-%     pause(1/8)
-% end
-% view(3);
-% hold off 
+figure()
+title('Trajectory joint positions') 
+axis equal
+for i =1:length(positions)
+    plot3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3))
+    xlabel('X') 
+    ylabel('Y') 
+    zlabel('Z')
+    axis([-0.15 0.15 -0.15 0.15 -0.2 0.1])
+    view(118,27)
+    hold on
+    scatter3(joint_positions(i, :, 1), joint_positions(i, :, 2), joint_positions(i, :, 3), 'O')
+    final_positions(i, :) = squeeze(joint_positions(i, end, :));
+    scatter3(joint_positions(i, end, 1), joint_positions(i, end, 2), joint_positions(i, end, 3), '*', 'r')
+    hold off
+    pause(1/8)
+end
+view(3);
+hold off 
 
 % figure()
 % title('Trajectory joint positions (1/2)')
