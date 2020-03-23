@@ -38,41 +38,64 @@ int main(int argc, char **argv)
 	ros::NodeHandle node;
 	DarwinJointControl darwin(&node);
 	// darwin.setJoint("j_high_arm_r", M_PI_2);
-	DarwinReadFile table("test.txt");
+	DarwinReadFile table("qs.txt");
 	
 	ROS_INFO("%f", table.getTime(0));
-//	ROS_INFO("%f", table.getTime(2));
-//	ROS_INFO("%f", table.getTime(3));
-//	ROS_INFO("%f", table.getJoint(3,0));
-//	ROS_INFO("%f", table.getJoint(3,2));
-//	darwin->getNameOnScreen();
-	
-	ros::Duration time_tot(10.0);
-	ros::Rate rate(40);
-	//*	
-	darwin.goalPos("j_pan", 1.5, time_tot, rate);
+	ROS_INFO("%f", table.getTime(1));
+	ROS_INFO("%f", table.getTime(2));
+	ROS_INFO("%f", table.getTime(3));
+	ROS_INFO("%f", table.getJoint(3,0));
+	ROS_INFO("%f", table.getJoint(3,2));
 
-	darwin.goalPos("j_pelvis_l", 	0.0, time_tot, rate);
-	darwin.goalPos("j_thigh1_l", 	0.0, time_tot, rate);
-	darwin.goalPos("j_thigh2_l", 	0.0, time_tot, rate);
-	darwin.goalPos("j_tibia_l", 	0.0, time_tot, rate);
-	darwin.goalPos("j_ankle1_l", 	0.0, time_tot, rate);
-	darwin.goalPos("j_ankle2_l", 	0.0, time_tot, rate);
-	darwin.goalPos("j_pelvis_r", 	0.0, time_tot, rate);
-	darwin.goalPos("j_thigh1_r", 	0.0, time_tot, rate);
-	darwin.goalPos("j_thigh2_r", 	0.0, time_tot, rate);
-	darwin.goalPos("j_tibia_r", 	0.0, time_tot, rate);
-	darwin.goalPos("j_ankle1_r", 	0.0, time_tot, rate);
-	darwin.goalPos("j_ankle2_r", 	0.0, time_tot, rate);
-	//*/
-	time_tot.sleep();
+
+	ros::Duration rate_duration(1.0/25.0);
+
+	ros::Rate rate(25);
 	
-	darwin.goalPos("j_ankle2_r", 0.2, time_tot, rate);
-	darwin.goalPos("j_ankle2_l", 0.2, time_tot, rate);
-	darwin.goalPos("j_thigh1_l", 0.2, time_tot, rate);
-	darwin.goalPos("j_thigh1_r", 0.2, time_tot, rate);
+	int pCounter = 0;
 	
-	time_tot.sleep();
+	while(ros::ok()) {
+		// j_pelvis_r, j_thigh1_r, j_thigh2_r, j_tibia_r, j_ankle1_r, j_ankle2_r
+
+		darwin.goalPos("j_pelvis_r", table.getJoint(pCounter, 0) , rate_duration, rate);
+		darwin.goalPos("j_thigh1_r", table.getJoint(pCounter, 1) , rate_duration, rate);
+		darwin.goalPos("j_thigh2_r", table.getJoint(pCounter, 2) , rate_duration, rate);
+		darwin.goalPos("j_tibia_r", table.getJoint(pCounter, 3) , rate_duration, rate);
+		darwin.goalPos("j_ankle1_r", table.getJoint(pCounter, 4) , rate_duration, rate);
+		darwin.goalPos("j_ankle2_r", table.getJoint(pCounter, 5) , rate_duration, rate);
+
+		rate.sleep();
+	}
+
+
+// //	darwin->getNameOnScreen();
+	
+// 	ros::Duration time_tot(10.0);
+// 	ros::Rate rate(40);
+// 	//*	
+// 	darwin.goalPos("j_pan", 1.5, time_tot, rate);
+
+// 	darwin.goalPos("j_pelvis_l", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_thigh1_l", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_thigh2_l", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_tibia_l", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_ankle1_l", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_ankle2_l", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_pelvis_r", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_thigh1_r", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_thigh2_r", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_tibia_r", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_ankle1_r", 	0.0, time_tot, rate);
+// 	darwin.goalPos("j_ankle2_r", 	0.0, time_tot, rate);
+// 	//*/
+// 	time_tot.sleep();
+	
+// 	darwin.goalPos("j_ankle2_r", 0.2, time_tot, rate);
+// 	darwin.goalPos("j_ankle2_l", 0.2, time_tot, rate);
+// 	darwin.goalPos("j_thigh1_l", 0.2, time_tot, rate);
+// 	darwin.goalPos("j_thigh1_r", 0.2, time_tot, rate);
+	
+// 	time_tot.sleep();
 	
 	/*
 	j_urdf["L_SHOULDER_PITCH"] = "j_shoulder_l";
