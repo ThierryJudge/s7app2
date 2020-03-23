@@ -53,16 +53,37 @@ int main(int argc, char **argv)
 	ros::Rate rate(25);
 	
 	int pCounter = 0;
-	
+
 	while(ros::ok()) {
 		// j_pelvis_r, j_thigh1_r, j_thigh2_r, j_tibia_r, j_ankle1_r, j_ankle2_r
 
-		darwin.goalPos("j_pelvis_r", table.getJoint(pCounter, 0) , rate_duration, rate);
-		darwin.goalPos("j_thigh1_r", table.getJoint(pCounter, 1) , rate_duration, rate);
-		darwin.goalPos("j_thigh2_r", table.getJoint(pCounter, 2) , rate_duration, rate);
-		darwin.goalPos("j_tibia_r", table.getJoint(pCounter, 3) , rate_duration, rate);
-		darwin.goalPos("j_ankle1_r", table.getJoint(pCounter, 4) , rate_duration, rate);
-		darwin.goalPos("j_ankle2_r", table.getJoint(pCounter, 5) , rate_duration, rate);
+		double pelvis, thigh1, thigh2, tibia, ankle1, ankle2;
+
+		pelvis = table.getJoint(pCounter, 0);
+		thigh1 = table.getJoint(pCounter, 1);
+		thigh2 = table.getJoint(pCounter, 2);
+		tibia = table.getJoint(pCounter, 3);
+		ankle1 = table.getJoint(pCounter, 4);
+		ankle2 = table.getJoint(pCounter, 5);
+
+		ROS_INFO("Values read from file, counter = %d", pCounter);
+		ROS_INFO("pelvis, read: %f", pelvis);
+		ROS_INFO("thigh1, read: %f", thigh1);
+		ROS_INFO("thigh2, read: %f", thigh2);
+		ROS_INFO("tibia, read: %f", tibia);
+		ROS_INFO("ankle1, read: %f", ankle1);
+		ROS_INFO("ankle2, read: %f", ankle2);
+
+		darwin.goalPos("j_pelvis_r", pelvis, rate_duration, rate);
+		darwin.goalPos("j_thigh1_r", thigh1, rate_duration, rate);
+		darwin.goalPos("j_thigh2_r", thigh2, rate_duration, rate);
+		darwin.goalPos("j_tibia_r", tibia, rate_duration, rate);
+		darwin.goalPos("j_ankle1_r", ankle1 , rate_duration, rate);
+		darwin.goalPos("j_ankle2_r", ankle2, rate_duration, rate);
+
+
+		if(pCounter < 50)
+			pCounter++;
 
 		rate.sleep();
 	}

@@ -20,7 +20,7 @@ DarwinReadFile::DarwinReadFile(string file_name)
 	{
 		while(getline(file, line))
 		{
-			split(line_vector,line,is_any_of("\t"));
+			split(line_vector,line,is_any_of(","));
 			vector<double> line_double;
 			for(int i = 0; i < line_vector.size(); i++)
 				line_double.push_back(atof(line_vector[i].c_str()));
