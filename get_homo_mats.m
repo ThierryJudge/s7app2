@@ -1,4 +1,4 @@
-function A0i = get_homo_mats(q)
+function [A0is, comp_mat_homo] = get_homo_mats_v2(q)
     
 hipOffsetY = .037; 
 hipOffsetZ = .096; 
@@ -13,37 +13,43 @@ aThigh = atan(kneeOffsetX/thighLength);
 dTibia = sqrt(tibiaLength*tibiaLength+kneeOffsetX*kneeOffsetX);
 aTibia = atan(kneeOffsetX/tibiaLength);
 
+pospiedz = hipOffsetZ - dThigh - dTibia - footHeight;
+
 NB_LINKS = 6;
 
-as = [0 0 dThigh dTibia 0 0];
+as = [0 0 dThigh dTibia 0 footHeight];
 ds = [0 0 0 0 0 0 ];
 alphas = [-pi/2 -pi/2 0 pi pi/2 0];
-%thetas = [theta1 theta2 - pi/2 theta3 theta4 theta5 theta6];
+% q_initial = [0 0 0 0 0 0];
 thetas = q;
 thetas(2) = thetas(2) - pi/2;
 
 % Creation des matrices homogenes
-A0i = ones(NB_LINKS+1, 4, 4);
+A0is = ones(4, 4, NB_LINKS);
 
 Tb = [0 1 0 hipOffsetX,
       1 0 0 -hipOffsetY,
       0 0 -1 hipOffsetZ,
-      0 0 0 1];  
+      0 0 0 1]; 
+
+% tmp = eye(4:4);
 
 tmp = Tb;
 
 for i=1:NB_LINKS
     mat = mat_homo(as(i), alphas(i), ds(i), thetas(i));
     tmp = tmp*mat;
-    A0i(i, :, :) = tmp;
+    A0is(:, :, i) = tmp;
 end
 
-Te = [0 0 -1 footHeight,
+
+Te = [0 0 -1 0,
       0 -1 0 0,
       -1 0 0 0,
-      0 0 0 1];   
+      0 0 0 1]; 
   
-A0i(7, :, :) = tmp * Te;
+  
+comp_mat_homo = tmp*Te;
 
 end
 
