@@ -88,10 +88,10 @@ int main(int argc, char **argv)
 	//*/
 	time_tot.sleep();
 
-	darwin.goalPos("j_ankle2_r", 0.2, time_tot, init_rate);
-	darwin.goalPos("j_ankle2_l", 0.2, time_tot, init_rate);
-	darwin.goalPos("j_thigh1_l", 0.2, time_tot, init_rate);
-	darwin.goalPos("j_thigh1_r", 0.2, time_tot, init_rate);
+	darwin.goalPos("j_ankle2_r", table.getJoint(0, 5), time_tot, init_rate);
+	darwin.goalPos("j_ankle2_l", table.getJoint(0, 5), time_tot, init_rate);
+	darwin.goalPos("j_thigh1_l", table.getJoint(0, 1), time_tot, init_rate);
+	darwin.goalPos("j_thigh1_r", table.getJoint(0, 1), time_tot, init_rate);
 
 	time_tot.sleep();
 
