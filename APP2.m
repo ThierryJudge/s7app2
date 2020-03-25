@@ -47,7 +47,7 @@ p_final(1) = p_final(1) + x_max_delta;
 p_final(2) = p_final(2) + y_max_delta;
 
 dt = 2;         %Temps
-steps = 60;     %Nombre de valeurs
+steps = 20;     %Nombre de valeurs
 
 %Interpolation 
 p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+ z_max_value];
@@ -109,6 +109,8 @@ R_u = [0 1 0 0 0 0,
    
 qs = zeros(steps, NB_LINKS)
 
+counter_max = 1500
+
 for interpolation_index = 1:length(positions)
     disp(newline)
     disp(['interpolation_index: ',num2str(interpolation_index)])
@@ -140,8 +142,10 @@ for interpolation_index = 1:length(positions)
     disp(['Initial position error: ',num2str(norm(ep))])
     disp(['Initial orientation error: ',num2str(norm(er))])
     counter = 0;
+    
+    
 
-    while ((norm(ep) > epsilon_p) || norm(er) > epsilon_r) 
+    while ((norm(ep) > epsilon_p) || norm(er) > epsilon_r) && (counter < counter_max) 
         jac = algo_jaco(A0is);
         Jp = jac(1:3, :);
         Jo = jac(4:6, :);
@@ -172,6 +176,11 @@ for interpolation_index = 1:length(positions)
         end
         counter = counter + 1;
     end
+    
+    disp(['Final rotation norm: '])
+    disp(norm(er))
+    
+    disp(['Counter: ',num2str(counter)])
     
     qs(interpolation_index, :) = round(q, 4);
 
