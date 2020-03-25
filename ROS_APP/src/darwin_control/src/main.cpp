@@ -60,35 +60,11 @@ int main(int argc, char **argv)
    */
 	ros::NodeHandle node;
 	DarwinJointControl darwin(&node);
-	// darwin.setJoint("j_high_arm_r", M_PI_2);
 	DarwinReadFile table("qs.txt");
-
-	ROS_INFO("%f", table.getTime(0));
-	ROS_INFO("%f", table.getTime(1));
-	ROS_INFO("%f", table.getTime(2));
-	ROS_INFO("%f", table.getTime(3));
-	ROS_INFO("%f", table.getJoint(3, 0));
-	ROS_INFO("%f", table.getJoint(3, 2));
 
 	ros::Duration rate_duration(1.0 / 25.0);
 
 	ros::Rate rate(25);
-
-	int pCounter = 0;
-
-	// Tentative d'atteindre la position initiale plus lentement.
-	ros::Duration initialMovementDuration(2);
-
-	double pelvis, thigh1, thigh2, tibia, ankle1, ankle2;
-
-	pelvis = table.getJoint(pCounter, 0);
-	thigh1 = table.getJoint(pCounter, 1);
-	thigh2 = table.getJoint(pCounter, 2);
-	tibia = table.getJoint(pCounter, 3);
-	ankle1 = table.getJoint(pCounter, 4);
-	ankle2 = table.getJoint(pCounter, 5);
-
-	darwin.getNameOnScreen();
 
 	ROS_INFO("Placing DarwinOP to initial position");
 	ros::Duration head_rot_time(2.0);
@@ -120,10 +96,12 @@ int main(int argc, char **argv)
 	time_tot.sleep();
 
 	ROS_INFO("Starting movement");
+	int pCounter = 0;
+	double pelvis, thigh1, thigh2, tibia, ankle1, ankle2;
+	
 	rate.reset();
 	while (ros::ok())
 	{
-		// j_pelvis_r, j_thigh1_r, j_thigh2_r, j_tibia_r, j_ankle1_r, j_ankle2_r
 		pelvis = table.getJoint(pCounter, 0);
 		thigh1 = table.getJoint(pCounter, 1);
 		thigh2 = table.getJoint(pCounter, 2);
