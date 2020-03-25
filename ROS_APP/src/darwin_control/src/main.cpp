@@ -16,6 +16,29 @@ Date: 05/02/14
 	Joint : j_pelvis_r, j_thigh1_r, j_thigh2_r, j_tibia_r, j_ankle1_r, j_ankle2_r
 */
 
+/*
+	j_urdf["L_SHOULDER_PITCH"] = "j_shoulder_l";
+	j_urdf["L_SHOULDER_ROLL"] = "j_high_arm_l";
+	j_urdf["L_ELBOW"] = "j_low_arm_l";
+	j_urdf["R_SHOULDER_PITCH"] = "j_shoulder_r";
+	j_urdf["R_SHOULDER_ROLL"] = "j_high_arm_r";
+	j_urdf["R_ELBOW"] = "j_low_arm_r";
+	j_urdf["HEAD_PAN"] = "j_pan";
+	j_urdf["HEAD_TILT"] = "j_tilt";
+	j_urdf["L_HIP_YAW"] = "j_pelvis_l";
+	j_urdf["L_HIP_ROLL"] = "j_thigh1_l";
+	j_urdf["L_HIP_PITCH"] = "j_thigh2_l";
+	j_urdf["L_ANKLE_PITCH"] = "j_tibia_l";
+	j_urdf["L_ANKLE_ROLL"] = "j_ankle1_l";
+	j_urdf["L_KNEE"] = "j_ankle2_l";
+	j_urdf["R_HIP_YAW"] = "j_pelvis_r";
+	j_urdf["R_HIP_ROLL"] = "jthigh1_r";
+	j_urdf["R_HIP_PITCH"] = "j_thigh2_r";
+	j_urdf["R_ANKLE_PITCH"] = "j_tibia_r";
+	j_urdf["R_ANKLE_ROLL"] = "j_ankle1_r";
+	j_urdf["R_KNEE"] = "j_ankle2_r"; 
+	*/
+
 int main(int argc, char **argv)
 {
 	/**
@@ -65,26 +88,38 @@ int main(int argc, char **argv)
 	ankle1 = table.getJoint(pCounter, 4);
 	ankle2 = table.getJoint(pCounter, 5);
 
-	// darwin.goalPos("j_pelvis_r", pelvis, initialMovementDuration, rate);
-	// darwin.goalPos("j_thigh1_r", thigh1, initialMovementDuration, rate);
-	// darwin.goalPos("j_thigh2_r", thigh2, initialMovementDuration, rate);
-	// darwin.goalPos("j_tibia_r", tibia, initialMovementDuration, rate);
-	// darwin.goalPos("j_ankle1_r", ankle1, initialMovementDuration, rate);
-	// darwin.goalPos("j_ankle2_r", ankle2, initialMovementDuration, rate);
+	darwin.getNameOnScreen();
 
 	ROS_INFO("Placing DarwinOP to initial position");
+	ros::Duration head_rot_time(2.0);
+	ros::Duration time_tot(3.0);
+	ros::Rate init_rate(40);
+	//*
+	darwin.goalPos("j_pan", 1.5, head_rot_time, init_rate);
 
-	// darwin.setJoint("j_pelvis_r", pelvis);
-	darwin.setJoint("j_thigh1_r", thigh1);
-	darwin.setJoint("j_thigh2_r", thigh2);
-	darwin.setJoint("j_tibia_r", tibia);
-	darwin.setJoint("j_ankle1_r", ankle1);
-	darwin.setJoint("j_ankle2_r", ankle2);
+	darwin.goalPos("j_pelvis_l", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_thigh1_l", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_thigh2_l", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_tibia_l", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_ankle1_l", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_ankle2_l", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_pelvis_r", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_thigh1_r", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_thigh2_r", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_tibia_r", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_ankle1_r", 0.0, head_rot_time, init_rate);
+	darwin.goalPos("j_ankle2_r", 0.0, head_rot_time, init_rate);
+	//*/
+	time_tot.sleep();
 
-	// initialMovementDuration.sleep();
+	darwin.goalPos("j_ankle2_r", 0.2, time_tot, init_rate);
+	darwin.goalPos("j_ankle2_l", 0.2, time_tot, init_rate);
+	darwin.goalPos("j_thigh1_l", 0.2, time_tot, init_rate);
+	darwin.goalPos("j_thigh1_r", 0.2, time_tot, init_rate);
+
+	time_tot.sleep();
 
 	ROS_INFO("Starting movement");
-	
 	rate.reset();
 	while (ros::ok())
 	{
@@ -119,65 +154,5 @@ int main(int argc, char **argv)
 		rate.sleep();
 	}
 
-	// //	darwin->getNameOnScreen();
-
-	// 	ros::Duration time_tot(10.0);
-	// 	ros::Rate rate(40);
-	// 	//*
-	// 	darwin.goalPos("j_pan", 1.5, time_tot, rate);
-
-	// 	darwin.goalPos("j_pelvis_l", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_thigh1_l", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_thigh2_l", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_tibia_l", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_ankle1_l", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_ankle2_l", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_pelvis_r", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_thigh1_r", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_thigh2_r", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_tibia_r", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_ankle1_r", 	0.0, time_tot, rate);
-	// 	darwin.goalPos("j_ankle2_r", 	0.0, time_tot, rate);
-	// 	//*/
-	// 	time_tot.sleep();
-
-	// 	darwin.goalPos("j_ankle2_r", 0.2, time_tot, rate);
-	// 	darwin.goalPos("j_ankle2_l", 0.2, time_tot, rate);
-	// 	darwin.goalPos("j_thigh1_l", 0.2, time_tot, rate);
-	// 	darwin.goalPos("j_thigh1_r", 0.2, time_tot, rate);
-
-	// 	time_tot.sleep();
-
-	/*
-	j_urdf["L_SHOULDER_PITCH"] = "j_shoulder_l";
-	j_urdf["L_SHOULDER_ROLL"] = "j_high_arm_l";
-	j_urdf["L_ELBOW"] = "j_low_arm_l";
-	j_urdf["R_SHOULDER_PITCH"] = "j_shoulder_r";
-	j_urdf["R_SHOULDER_ROLL"] = "j_high_arm_r";
-	j_urdf["R_ELBOW"] = "j_low_arm_r";
-	j_urdf["HEAD_PAN"] = "j_pan";
-	j_urdf["HEAD_TILT"] = "j_tilt";
-	j_urdf["L_HIP_YAW"] = "j_pelvis_l";
-	j_urdf["L_HIP_ROLL"] = "j_thigh1_l";
-	j_urdf["L_HIP_PITCH"] = "j_thigh2_l";
-	j_urdf["L_ANKLE_PITCH"] = "j_tibia_l";
-	j_urdf["L_ANKLE_ROLL"] = "j_ankle1_l";
-	j_urdf["L_KNEE"] = "j_ankle2_l";
-	j_urdf["R_HIP_YAW"] = "j_pelvis_r";
-	j_urdf["R_HIP_ROLL"] = "jthigh1_r";
-	j_urdf["R_HIP_PITCH"] = "j_thigh2_r";
-	j_urdf["R_ANKLE_PITCH"] = "j_tibia_r";
-	j_urdf["R_ANKLE_ROLL"] = "j_ankle1_r";
-	j_urdf["R_KNEE"] = "j_ankle2_r"; 
-	*/
-
-	/*	ros::Duration time(2.0);
-	while (ros::ok())
-	{	
-		darwin.setJoint("j_high_arm_r", 0.2);
-		ros::spinOunce();
-		time.sleep();
-		darwin.setJoint("j_high_arm_r", 0.0);	
-	}*/
 	return 0;
 }
