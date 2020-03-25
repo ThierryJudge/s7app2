@@ -243,5 +243,89 @@ hold off
 
 close(video)
 
+%% Plot final positions with respect to time 
+
+
+pr = zeros(length(qs), 6);
+
+for i =1:length(qs)
+    [A0is, comp_homo_mat] = get_homo_mats(squeeze(qs(i, :)));
+   
+    r = comp_homo_mat(1:3, 1:3);
+    p = comp_homo_mat(1:3, 4);
+    
+    yaw = atan2(r(2,1),r(1,1));
+    pitch = atan2(-r(3,1), sqrt(r(3,2)^2 + r(3,3)^2));
+    roll = atan2(r(3,2),r(3,3));
+    
+    pr(i, 1:3) = p;
+    pr(i, 4) = yaw;
+    pr(i, 5) = pitch;
+    pr(i, 6) = roll;
+    
+end
+
+figure()
+
+subplot(2,3,1)
+plot(t,pr(:, 1))
+title('X position')
+
+subplot(2,3,2)
+plot(t,pr(:, 2))
+title('Y position')
+
+subplot(2,3,3)
+plot(t,pr(:, 3))
+title('Z postion')
+
+subplot(2,3,4)
+plot(t,pr(:, 4))
+axis([0 2 -pi/2 pi/2])
+title('Yaw')
+
+subplot(2,3,5)
+plot(t,pr(:, 5))
+axis([0 2 -pi/2 pi/2])
+
+title('Pitch')
+
+subplot(2,3,6)
+plot(t,pr(:, 6))
+axis([0 2 -pi/2 pi/2])
+title('Roll')
+
+%% Plot joint positions 
+
+
+figure()
+
+subplot(3,2,1)
+plot(t,qs(:, 1))
+title('Joint Hip 0')
+
+subplot(3,2,2)
+plot(t,qs(:, 2))
+title('Joint Hip 1')
+
+subplot(3,2,3)
+plot(t,qs(:, 3))
+title('Joint Hip 2')
+
+subplot(3,2,4)
+plot(t,qs(:, 4))
+title('Joint knee 0')
+
+subplot(3,2,5)
+plot(t,qs(:, 5))
+title('Joint ankle 0')
+
+subplot(3,2,6)
+plot(t,qs(:, 6))
+title('Joint ankle 0')
+
+
+
+
 
 
