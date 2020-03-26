@@ -47,7 +47,7 @@ p_final(1) = p_final(1) + x_max_delta;
 p_final(2) = p_final(2) + y_max_delta;
 
 dt = 2;         %Temps
-steps = 20;     %Nombre de valeurs
+steps = 60;     %Nombre de valeurs
 
 %Interpolation 
 p_int = [(p_final(1) - p_initial(1))/2 + p_initial(1), (p_final(2) - p_initial(2))/2 + p_initial(2), p_initial(3)+ z_max_value];
