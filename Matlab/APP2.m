@@ -278,32 +278,42 @@ figure()
 
 subplot(2,3,1)
 plot(t,pr(:, 1))
-title('X position')
+title('Position effecteur x')
+ylabel('Position (m)')
+xlabel('Temps (s)')
 
 subplot(2,3,2)
 plot(t,pr(:, 2))
-title('Y position')
+title('Position effecteur y')
+ylabel('Position (m)')
+xlabel('Temps (s)')
 
 subplot(2,3,3)
 plot(t,pr(:, 3))
-title('Z postion')
+title('Position effecteur z')
+ylabel('Position (m)')
+xlabel('Temps (s)')
 
 subplot(2,3,4)
 plot(t,pr(:, 4))
 axis([0 2 -pi/2 pi/2])
-title('Yaw')
+title('Angle yaw de l''effecteur')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 
 subplot(2,3,5)
 plot(t,pr(:, 5))
 axis([0 2 -pi/2 pi/2])
-
-title('Pitch')
+title('Angle pitch de l''effecteur')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 
 subplot(2,3,6)
 plot(t,pr(:, 6))
 axis([0 2 -pi/2 pi/2])
-title('Roll')
-
+title('Angle roll de l''effecteur')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 %% Plot joint positions 
 
 
@@ -311,29 +321,43 @@ figure()
 
 subplot(3,2,1)
 plot(t,qs(:, 1))
-title('Joint Hip 0')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
+title('Joint 0')
 
 subplot(3,2,2)
 plot(t,qs(:, 2))
-title('Joint Hip 1')
+title('Joint 1')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 
 subplot(3,2,3)
 plot(t,qs(:, 3))
-title('Joint Hip 2')
+title('Joint 2')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 
 subplot(3,2,4)
 plot(t,qs(:, 4))
-title('Joint knee 0')
+title('Joint 3')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 
 subplot(3,2,5)
 plot(t,qs(:, 5))
-title('Joint ankle 0')
+title('Joint 4')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
 
 subplot(3,2,6)
 plot(t,qs(:, 6))
-title('Joint ankle 0')
+title('Joint 5')
+ylabel('Angle (rad)')
+xlabel('Temps (s)')
+currentFigure = gcf;
 
-
+%%
+q_initial
 
 
 
