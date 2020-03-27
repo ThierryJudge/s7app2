@@ -60,7 +60,7 @@ int main(int argc, char **argv)
    */
 	ros::NodeHandle node;
 	DarwinJointControl darwin(&node);
-	DarwinReadFile table("qs.txt");
+	DarwinReadFile table("src/darwin_control/src/qs.txt");
 
 	ros::Duration rate_duration(1.0 / 25.0);
 
